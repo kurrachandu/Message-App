@@ -25,7 +25,7 @@ const Create = () => {
         }
         else{
           localStorage.setItem('loggedUserData',JSON.stringify(UnameOrEmail));
-          navigate('/home'); 
+          navigate('/chatpage'); 
         }
         // navigate('/home'); 
     };
