@@ -9,10 +9,10 @@ const PostLogin = () => {
   const [values, setValues] = useState({
     username: "",
     email: "",
-    DateofBirth: "",
+    // DateofBirth: "",
     password: "",
     confirmPassword: "",
-    gender : ""
+    // gender : ""
   });
   const [duplicateError, setDuplicateError] = useState(false);
   
@@ -20,7 +20,7 @@ const PostLogin = () => {
   {
     e.preventDefault();
     // Retrieve existing data from local storage
-    const existingData = JSON.parse(localStorage.getItem('LoginData')) || []; // Set default value as an empty array if no existing data
+    const existingData = JSON.parse(localStorage.getItem('RegisterData')) || []; // Set default value as an empty array if no existing data
   
     // Check if the new values already exist in the existing data
     const isDuplicate = existingData.some((data) => 
@@ -43,7 +43,7 @@ const PostLogin = () => {
     const newData = [...existingData, values];
   
     // Store the updated data in local storage
-    localStorage.setItem('LoginData', JSON.stringify(newData));
+    localStorage.setItem('RegisterData', JSON.stringify(newData));
   
     // Redirect or perform any other actions after submitting the form
     navigate('/');
@@ -98,7 +98,7 @@ const PostLogin = () => {
 />
 
         
-        <FormInput
+        {/* <FormInput
           name="DateofBirth"
           type="date"
           placeholder="Date of Birth"
@@ -106,7 +106,7 @@ const PostLogin = () => {
           required={true}
           value={values.DateofBirth}
           onChange={onChange}
-        />
+        /> */}
         
         <FormInput
           name="password"
@@ -119,7 +119,7 @@ const PostLogin = () => {
           value={values.password}
           onChange={onChange}
         />
-        <div className='gender'>
+        {/* <div className='gender'>
           <p>Gender</p>
           <input
             type="radio"
@@ -135,7 +135,7 @@ const PostLogin = () => {
             onChange={onChange}
           />
           <label For="female">Female</label>
-        </div>
+        </div> */}
 
         <FormInput
           name="confirmPassword"
