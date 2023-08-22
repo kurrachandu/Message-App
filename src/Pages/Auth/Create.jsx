@@ -14,7 +14,7 @@ const Create = () => {
     const handleSubmit = (e) => 
     {
         e.preventDefault();
-        const existingData = JSON.parse(localStorage.getItem('LoginData')) || [];
+        const existingData = JSON.parse(localStorage.getItem('RegisterData')) || [];
         const userData = existingData.find(data => 
           data.username === UnameOrEmail.username || data.email === UnameOrEmail.username
         );
