@@ -1,5 +1,5 @@
 /* eslint-disable no-unused-vars */
-import React, { useState } from 'react';
+import React, { useState,useEffect} from 'react';
 import FormInput from '../Auth/FormInput';
 import "../../../src/App.css";
 import { useNavigate } from 'react-router-dom';
@@ -12,42 +12,92 @@ const PostLogin = () => {
     // DateofBirth: "",
     password: "",
     confirmPassword: "",
+    login_status:"",
+    messages : [],
     // gender : ""
   });
+  const [localData, setLocalData] = useState([]);
+
+  useEffect(() => {
+    const storedData = localStorage.getItem("UsersData");
+    if (storedData) {
+      const parsedData = JSON.parse(storedData);
+      if (Array.isArray(parsedData)) {
+        setLocalData(parsedData);
+      }
+    }
+  }, []);
+
+  const { email, username, password, mobileNumber, dateOfBirth, login_status, messages  } = values;
+
   const [duplicateError, setDuplicateError] = useState(false);
   
   const handleSubmit = (e) => 
   {
     e.preventDefault();
-    // Retrieve existing data from local storage
-    const existingData = JSON.parse(localStorage.getItem('RegisterData')) || []; // Set default value as an empty array if no existing data
-  
-    // Check if the new values already exist in the existing data
-    const isDuplicate = existingData.some((data) => 
-    {
-      console.log("DATA"+data)
-      console.log("VALUES"+values)
-      // Compare the values of the objects
-      return JSON.stringify(data.username) === JSON.stringify(values.username);
 
-    });
-  
-    if (isDuplicate) 
-    {
-      // Handle the case when the values already exist in the form data
-      alert('Data already exists and pls login');
-      navigate('/');
+    const newFormData = {
+      email,
+      username,
+      password,
+      mobileNumber,
+      dateOfBirth,
+      login_status ,
+      messages,
+    };
+
+
+    const existingUser = localData.find((item) => item.username === username);
+    if (existingUser) {
+      alert("User already exists");
       return;
     }
-    // Merge the new data with the existing data
-    const newData = [...existingData, values];
-  
-    // Store the updated data in local storage
-    localStorage.setItem('RegisterData', JSON.stringify(newData));
-  
-    // Redirect or perform any other actions after submitting the form
-    navigate('/');
+
+    const updatedData = [...localData, newFormData];
+    localStorage.setItem("UsersData", JSON.stringify(updatedData));
+    setLocalData(updatedData);
+    setValues({
+      email: "",
+      username: "",
+      password: "",
+      mobileNumber: "",
+      dateOfBirth: "",
+      messages : [],
+    });
+
+    console.log(values);
+    navigate("/");
   };
+
+    // Retrieve existing data from local storage
+    // const existingData = JSON.parse(localStorage.getItem('RegisterData')) || []; // Set default value as an empty array if no existing data
+  
+    // // Check if the new values already exist in the existing data
+    // const isDuplicate = existingData.some((data) => 
+    // {
+    //   console.log("DATA"+data)
+    //   console.log("VALUES"+values)
+    //   // Compare the values of the objects
+    //   return JSON.stringify(data.username) === JSON.stringify(values.username);
+
+    // });
+  
+    // if (isDuplicate) 
+    // {
+    //   // Handle the case when the values already exist in the form data
+    //   alert('Data already exists and pls login');
+    //   navigate('/');
+    //   return;
+    // }
+    // Merge the new data with the existing data
+    // const newData = [...existingData, values];
+  
+    // // Store the updated data in local storage
+    // localStorage.setItem('RegisterData', JSON.stringify(newData));
+  
+    // // Redirect or perform any other actions after submitting the form
+    // navigate('/');
+  
   
 
   const onChange = (e) => {

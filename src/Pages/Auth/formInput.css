@@ -17,7 +17,7 @@ label{
     font-size: 12px;
     color: gray;
 }
-span {
+.errors {
     font-size: 14px;
     padding: 10px;
     color: black;

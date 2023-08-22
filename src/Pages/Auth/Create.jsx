@@ -10,25 +10,53 @@ const Create = () => {
       password: ""
     });
     
-
-    const handleSubmit = (e) => 
-    {
-        e.preventDefault();
-        const existingData = JSON.parse(localStorage.getItem('RegisterData')) || [];
-        const userData = existingData.find(data => 
-          data.username === UnameOrEmail.username || data.email === UnameOrEmail.username
-        );
-
-        if (!userData || userData.password !== UnameOrEmail.password) {
-          alert('Invalid credentials');
-          return;
-        }
-        else{
-          localStorage.setItem('loggedUserData',JSON.stringify(UnameOrEmail));
-          navigate('/chatpage'); 
-        }
-        // navigate('/home'); 
+    const handleSubmit = (e) => {
+      e.preventDefault();
+  
+      const storedData = JSON.parse(localStorage.getItem("Users")) || [];
+      console.log(storedData, "existingData");
+  
+      const user = storedData.find((data) => {
+        return data.username === UnameOrEmail.username && data.password === UnameOrEmail.password;
+      });
+  
+      if (user) {
+        alert("Welcome" + " " + UnameOrEmail.username);
+  
+        const updatedData = storedData.map((data) => {
+          if (data.username === UnameOrEmail.username && data.password === UnameOrEmail.password) {
+            return { ...data, login_status: "login" };
+          }
+          return data;
+        });
+  
+        localStorage.setItem("Users", JSON.stringify(updatedData));
+       
+       
+  
+        navigate("/chatpage");
+      } else {
+        alert("User does not exist !Register")
+      }
     };
+    // const handleSubmit = (e) => 
+    // {
+    //     e.preventDefault();
+    //     const existingData = JSON.parse(localStorage.getItem('UsersData')) || [];
+    //     const userData = existingData.find(data => 
+    //       data.username === UnameOrEmail.username || data.email === UnameOrEmail.username
+    //     );
+
+    //     if (!userData || userData.password !== UnameOrEmail.password) {
+    //       alert('Invalid credentials');
+    //       return;
+    //     }
+    //     else{
+    //       localStorage.setItem('loggedUserData',JSON.stringify(UnameOrEmail));
+    //       navigate('/chatpage'); 
+    //     }
+    //     // navigate('/home'); 
+    // };
   
     const onChange = (e) =>
      {
@@ -43,9 +71,9 @@ const Create = () => {
           <FormInput
             name="username" // Changed to "identifier"
             type="text"
-            placeholder="Username or Email" 
-            errorMessage="Username or email should be valid"
-            label="Username or Email" // Updated label
+            placeholder="Enter Your Username" 
+            errorMessage="Username is not should be valid"
+            label="Username" // Updated label
             required={true}
             value={UnameOrEmail.username}
             onChange={onChange}
