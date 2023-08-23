@@ -4,41 +4,76 @@ import { useNavigate } from 'react-router-dom';
 import React, { useState } from 'react';
 
 const Create = () => {
-    const navigate = useNavigate();
-    const [UnameOrEmail, setUnameOrEmail] = useState({
-      username: "", 
-      password: ""
+  const [name, setName] = useState("");
+  const [password, setPassword] = useState("");
+  const [loginData, setLoginData] = useState("");
+  const navigate = useNavigate();
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+
+    const storedData = JSON.parse(localStorage.getItem("Users")) || [];
+    console.log(storedData, "existingData");
+
+    const user = storedData.find((data) => {
+      return data.username === name && data.password === password;
     });
-    
-    const handleSubmit = (e) => {
-      e.preventDefault();
-  
-      const storedData = JSON.parse(localStorage.getItem("Users")) || [];
-      console.log(storedData, "existingData");
-  
-      const user = storedData.find((data) => {
-        return data.username === UnameOrEmail.username && data.password === UnameOrEmail.password;
+
+    if (user) {
+      alert("Welcome" + " " + name);
+
+      const updatedData = storedData.map((data) => {
+        if (data.username === name && data.password === password) {
+          return { ...data, login_status: "login" };
+        }
+        return data;
       });
+
+      localStorage.setItem("Users", JSON.stringify(updatedData));
+     
+     
+
+      navigate("/chatpage");
+    } else {
+      alert("User does not exist !Register")
+    }
+  };
+
+    // const navigate = useNavigate();
+    // const [UnameOrEmail, setUnameOrEmail] = useState({
+    //   username: "", 
+    //   password: ""
+    // });
+    
+    // const handleSubmit = (e) => {
+    //   e.preventDefault();
   
-      if (user) {
-        alert("Welcome" + " " + UnameOrEmail.username);
+    //   const storedData = JSON.parse(localStorage.getItem("Users")) || [];
+    //   console.log(storedData, "existingData");
   
-        const updatedData = storedData.map((data) => {
-          if (data.username === UnameOrEmail.username && data.password === UnameOrEmail.password) {
-            return { ...data, login_status: "login" };
-          }
-          return data;
-        });
+    //   const user = storedData.find((values) => {
+    //     return values.username === UnameOrEmail.username && values.password === UnameOrEmail.password;
+    //   });
   
-        localStorage.setItem("Users", JSON.stringify(updatedData));
+    //   if (user) {
+    //     alert("Welcome" + " " + UnameOrEmail.username);
+  
+    //     const updatedData = storedData.map((values) => {
+    //       if (values.username === UnameOrEmail.username && values.password === UnameOrEmail.password) {
+    //         return { ...values, login_status: "login" };
+    //       }
+    //       return values;
+    //     });
+  
+    //     localStorage.setItem("Users", JSON.stringify(updatedData));
        
        
   
-        navigate("/chatpage");
-      } else {
-        alert("User does not exist !Register")
-      }
-    };
+    //     navigate("/chatpage");
+    //   } else {
+    //     alert("User does not exist !Register")
+    //   }
+    // };
     // const handleSubmit = (e) => 
     // {
     //     e.preventDefault();
@@ -58,10 +93,10 @@ const Create = () => {
     //     // navigate('/home'); 
     // };
   
-    const onChange = (e) =>
-     {
-      setUnameOrEmail({ ...UnameOrEmail, [e.target.name]: e.target.value });
-    };
+    // const onChange = (e) =>
+    //  {
+    //   setUnameOrEmail({ ...UnameOrEmail, [e.target.name]: e.target.value });
+    // };
   
     return (
       <div className="app">
@@ -72,11 +107,11 @@ const Create = () => {
             name="username" // Changed to "identifier"
             type="text"
             placeholder="Enter Your Username" 
-            errorMessage="Username is not should be valid"
+            // errorMessage="Username is not should be valid"
             label="Username" // Updated label
             required={true}
-            value={UnameOrEmail.username}
-            onChange={onChange}
+            value={name}
+            onChange={(e) => setName(e.target.value)}
           />
   
           <FormInput
@@ -87,8 +122,8 @@ const Create = () => {
             pattern="^(?=.*[0-9])(?=.*[a-zA-Z])(?=.*[!@#$%^&*])[a-zA-Z0-9!@#$%^&*]{8,20}$"
             label="Password"
             required={true}
-            value={UnameOrEmail.password}
-            onChange={onChange}
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
           />
           <button  className = "btn" type="submit">Login</button>
           <p className = "Login-btn" onClick={() => navigate("/login")}>Don't have an account? Register Here</p>
