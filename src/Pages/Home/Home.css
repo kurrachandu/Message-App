@@ -15,14 +15,6 @@
   }
   
 
-
-
-
-
-
-
-
-
 .home{
     background-color: lightblue;
     height: 100vh;
@@ -52,8 +44,6 @@
                 color: white;
                 background-color: #2f2d52;
 
-
-
                 .logo{
                     font-weight: bold;
                 }
@@ -76,6 +66,10 @@
                         font-size: 10px;
                         border: none;
                         cursor: pointer;
+                        @include tablet {
+                          /* // position: absolute; */
+                          bottom: 10px;
+                        }
                     }
                 }
             }
@@ -85,29 +79,26 @@
         }
     
 
-
-
-
 .chat-app {
     display: flex;
     height: 97vh;
   }
 
-
-
-
-
-
-
-
-
-  
-  
   /* User List */
   .user-list {
     flex: 1;
     /* background-color: #f0f0f0; */
     padding: 20px;
+
+    .headers{
+      text-align: center;
+      font-weight: bolder;
+      padding-left: 10px;
+    }
+    .header3{
+      text-align: center;
+      font-weight: bolder;
+    }
 
 
     .navbar{
@@ -150,21 +141,6 @@
           cursor: pointer;
         }
       }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
   }
@@ -214,15 +190,6 @@
     text-align: center;
   }
   
-  /* .header-chat {
-    font-weight: bold;
-    color: #000000;
-    padding: 10px;
-    cursor: pointer;
-    display: flex;
-    justify-content: space-between;
-  } */
-
 
   .chatInfo{
     height: 30px;
@@ -235,9 +202,6 @@
     color: white;
   }
 
-
-
-  
   .messages {
     flex: 0.783;
     overflow-y: auto;
@@ -327,8 +291,6 @@
   }
 
 
-
-
   .navbar{
     display: flex;
     align-items: center;
@@ -369,23 +331,7 @@
       cursor: pointer;
     }
   
-
   }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
   .sidebar{
@@ -422,7 +368,6 @@
           border-radius: 50%;
           object-fit: cover;
         }
-
 
         .userChatInfo{
           span{
@@ -477,6 +422,94 @@
         }
       }
     }
+    .group-modal {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: white;
+      padding: 20px;
+      border-radius: 5px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+    }
+    
+    /* .close-button {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      background: none;
+      border: none;
+      font-size: 20px;
+      cursor: pointer;
+    }
+    button{
+      background-color: #007bff;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    } */
+
+    .group-modal {
+      border-radius: 50px;
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background-color: #fff;
+      border: 1px solid #ccc;
+      padding: 20px;
+      box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
+      z-index: 1000;
+      width: 300px;
+    }
+    
+    .group-modal h2 {
+      margin-top: 0;
+      font-size: 18px;
+    }
+    
+    .group-modal ul {
+      list-style: none;
+      padding: 0;
+      margin-left: 100px;
+    }
+    
+    .group-modal li {
+      margin: 10px 0;
+      cursor: pointer;
+    }
+    
+    .group-modal li.selected {
+      font-weight: bold;
+    }
+    
+    .group-modal input[type="text"] {
+      width: 50%;
+      padding: 5px;
+      margin: 10px 0;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      margin-left: 70px;
+    }
+    
+    .group-modal button {
+      padding: 5px 10px;
+      background-color: #007bff;
+      color: #fff;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      margin-right: 10px;
+      margin-left: 35px;
+    }
+    
+    .group-modal button.cancel {
+      background-color: #ccc;
+    }
+    
     
 }
 }
