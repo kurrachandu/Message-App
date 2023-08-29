@@ -13,7 +13,7 @@ const PostLogin = () => {
     mobileNumber: "",
     // dateOfBirth: "",
     login_status : "",
-    messages : [],
+    // messages : [],
   });
 
   const [localData, setLocalData] = useState([]);
@@ -28,7 +28,7 @@ const PostLogin = () => {
     }
   }, []);
 
-  const { email, username, password, mobileNumber, dateOfBirth, login_status, messages  } = data;
+  const { email, username, password, mobileNumber, dateOfBirth, login_status  } = data;
 
   const changeHandler = (e) => {
     const { name, value } = e.target;
@@ -71,7 +71,7 @@ const PostLogin = () => {
       mobileNumber,
       // dateOfBirth,
       login_status ,
-      messages,
+      // messages,
     };
 
     const existingUser = localData.find((item) => item.username === username);
@@ -89,7 +89,7 @@ const PostLogin = () => {
       password: "",
       mobileNumber: "",
       // dateOfBirth: "",
-      messages : [],
+      // messages : [],
     });
 
     console.log(data);
