@@ -7,6 +7,11 @@ const Home = () => {
   const [users, setUsers] = useState([]);
   const [selectedUser, setSelectedUser] = useState(null);
   const [messageInput, setMessageInput] = useState('');
+  const [showGroupModal, setShowGroupModal] = useState(false);
+  const [selectedGroupUsers, setSelectedGroupUsers] = useState([]);
+  const [groupname, setGroupName] = useState('');
+  const [groupMessages, setGroupMessages] = useState([]);
+  const [selectedGroup, setSelectedGroup] = useState(null);
 
   useEffect(() => {
     const storedUsers = JSON.parse(localStorage.getItem('Users')) || [];
@@ -18,40 +23,68 @@ const Home = () => {
     if (userWithoutLogin) {
       setSelectedUser({ ...userWithoutLogin, messages: [] });
     }
+
+    const storedGroupMessages = JSON.parse(localStorage.getItem('Groupmessages')) || [];
+    setGroupMessages(storedGroupMessages);
   }, []);
 
   useEffect(() => {
     if (selectedUser) {
-      const updatedUsers = users.map((user) =>
-        user.username === selectedUser.username ? selectedUser : user
+      const storedMessages = JSON.parse(localStorage.getItem('Messages')) || [];
+      
+      const userMessages = storedMessages.filter(
+        (message) =>
+          (message.sender === selectedUser.username &&
+            message.receiver === loggedInUser.username) ||
+          (message.sender === loggedInUser.username &&
+            message.receiver === selectedUser.username)
       );
-      localStorage.setItem('Users', JSON.stringify(updatedUsers));
+      setSelectedUser({ ...selectedUser, messages: userMessages });
     }
-  }, [selectedUser, users]);
+  }, [selectedUser]);
 
-  const handleSendMessage = (userWithoutLogin) => {
-    if (messageInput.trim() !== '' && selectedUser) {
+  const handleSendMessage = () => {
+    if (messageInput.trim() !== '' && (selectedUser || selectedGroup)) {
       const loggedInUser = users.find((user) => user.login_status === 'login');
-      const userWithoutLogin = users.find( (user) => user.login_status !== 'login');
-      const chatMessage = {
-        messageId: generateMessageId(loggedInUser.username),
-        sender: loggedInUser.username,
-        receiver:userWithoutLogin.username,
-        content: messageInput,
-        time: new Date().toLocaleString(),
-      };
+      const receiverUser = selectedUser
+        ? users.find(
+            (user) =>
+              user.username === selectedUser.username && user.login_status !== 'login'
+          )
+        : null;
 
-      const updatedSelectedUser = {
-        ...selectedUser,
-        messages: [...selectedUser.messages],
-      };
+      if (selectedGroup) {
+        const groupChat = {
+          sender: loggedInUser.username,
+          receiver: selectedGroup.members,
+          content: messageInput,
+          timestamp: new Date().toLocaleString(),
+        };
+        const updatedGroup = { ...selectedGroup, messages: [...selectedGroup.messages, groupChat] };
+        const updatedGroupMessages = groupMessages.map((group) =>
+          group.name === selectedGroup.name ? updatedGroup : group
+        );
+        setGroupMessages(updatedGroupMessages);
+        localStorage.setItem('Groupmessages', JSON.stringify(updatedGroupMessages));
+        setSelectedGroup(updatedGroup); // Display the message in the sender's chat area
+      } else {
+        const chatMessage = {
+          sender: loggedInUser.username,
+          receiver: receiverUser.username,
+          content: messageInput,
+          timestamp: new Date().toLocaleString(),
+        };
+        const storedMessages = JSON.parse(localStorage.getItem('Messages')) || [];
+        const updatedMessages = [...storedMessages, chatMessage];
+        localStorage.setItem('Messages', JSON.stringify(updatedMessages));
 
-      setSelectedUser(updatedSelectedUser);
+        setSelectedUser({
+          ...selectedUser,
+          messages: [...selectedUser.messages, chatMessage],
+        });
+      }
+
       setMessageInput('');
-
-      const storedMessages = JSON.parse(localStorage.getItem('messages')) || [];
-      storedMessages.push(chatMessage);
-      localStorage.setItem('messages', JSON.stringify(storedMessages));
     }
   };
 
@@ -66,17 +99,45 @@ const Home = () => {
     navigate('/');
   };
 
-  const generateMessageId = (sender) => {
-    const timestamp = new Date().getTime();
-    const random = Math.floor(Math.random() * 1000);
-    return `${sender}_${timestamp}_${random}`;
-  };
-
   const loggedInUser = users.find((user) => user.login_status === 'login');
 
-  const userWithoutLogin = users.find( (user) => user.login_status !== 'login');
   const handleUserClick = (user) => {
     setSelectedUser(user);
+    setSelectedGroup(null);
+  };
+
+  const handleGroupClick = (group) => {
+    setSelectedGroup(group);
+    setSelectedUser(null);
+  };
+
+  const toggleGroupModal = () => {
+    setShowGroupModal(!showGroupModal);
+  };
+
+  const toggleUserSelection = (user) => {
+
+    setSelectedGroupUsers((prevSelectedUsers) => {
+      if (prevSelectedUsers.includes(user.username)) {
+        return prevSelectedUsers.filter((username) => username !== user.username);
+      } else {
+        return [...prevSelectedUsers, user.username];
+      }
+    });
+  };
+
+  const handleCreateGroup = () => {
+    const newGroup = {
+      name: groupname,
+      members: selectedGroupUsers,
+      messages: [],
+    };
+    const updatedGroupMessages = [...groupMessages, newGroup];
+
+    setGroupMessages(updatedGroupMessages);
+    
+    localStorage.setItem('Groupmessages', JSON.stringify(updatedGroupMessages));
+    toggleGroupModal();
   };
 
   return (
@@ -96,7 +157,9 @@ const Home = () => {
               </div>
               <div className="userChat">
                 <div className="user-list">
+                <div className='headers' onClick={() => toggleGroupModal()}>Create a Group</div>
                   <h2>Contacts</h2>
+                  
                   <ul>
                     {users
                       .filter((user) => user.login_status !== 'login')
@@ -104,34 +167,82 @@ const Home = () => {
                         <li
                           key={index}
                           className={
-                            selectedUser && user.email === selectedUser.email ? 'active' : ''
+                            selectedUser && user.username === selectedUser.username ? 'active' : ''
                           }
                           onClick={() => handleUserClick(user)}
                         >
                           {user.username}
                         </li>
                       ))}
+                  
+                  <div className='header3'>Groups</div>
+                  {groupMessages.map((group, groupIndex) => (
+                    <li
+                      key={groupIndex}
+                      onClick={() => handleGroupClick(group)}
+                      className={selectedGroup === group ? 'active-group' : ''}
+                    >
+                      <p>{group.name}</p>
+                    </li>
+                  ))}
                   </ul>
                 </div>
               </div>
+              {showGroupModal && (
+                <div className="group-modal">
+                  <h2>Select Users for Group Chat</h2>
+                  <ul>
+                    {users.map((user) => (
+                      <li key={user.email}>
+                        <label>
+                          <input
+                            type="checkbox"
+                            onChange={() => toggleUserSelection(user)}
+                            checked={selectedGroupUsers.includes(user.username)}
+                          />
+                          {user.username}
+                        </label>
+                      </li>
+                    ))}
+                  </ul>
+                  <input
+                    type="text"
+                    value={groupname}
+                    onChange={(e) => setGroupName(e.target.value)}
+                    placeholder="Group Name...."
+                  />
+                  <button onClick={() => handleCreateGroup()}>Create Group</button>
+                  <button onClick={toggleGroupModal}>Cancel</button>
+                </div>
+              )}
             </div>
             <div className="chat-area">
-              {selectedUser && selectedUser.messages ? (
+              {selectedUser || selectedGroup ? (
                 <>
-                  <div className="header">{selectedUser.username}</div>
+                  <div className="header">
+                    {selectedGroup ? selectedGroup.name : selectedUser.username}
+                  </div>
                   <div className="messages">
-                    {selectedUser.messages.map((message, index) => (
-                      <div
-                        key={message.messageId}
-                        className={`message ${
-                          message.sender === loggedInUser.username ? 'sent' : 'received'
-                        }`}
-                      >
-                        <p>{message.receiver}</p>
-                        <p>{message.content}</p>
-                        <p>{message.time}</p>
-                      </div>
-                    ))}
+                    {(selectedGroup ? selectedGroup.messages : selectedUser.messages) ? (
+                      (selectedGroup ? selectedGroup.messages : selectedUser.messages).map(
+                        (message, index) => (
+                          <div
+                            key={index}
+                            className={`message ${
+                              message.sender === loggedInUser.username ? 'sent' : 'received'
+                            }`}
+                          >
+                            <p>
+                              {message.sender === loggedInUser.username ? 'You' : message.sender}
+                            </p>
+                            <p>{message.content}</p>
+                            <p>{message.timestamp}</p>
+                          </div>
+                        )
+                      )
+                    ) : (
+                      <p>No messages to display</p>
+                    )}
                   </div>
                   <div className="message-input">
                     <input
@@ -144,7 +255,7 @@ const Home = () => {
                   </div>
                 </>
               ) : (
-                <p>No Contacts to display</p>
+                <p>No Contacts or Groups to display</p>
               )}
             </div>
           </div>
