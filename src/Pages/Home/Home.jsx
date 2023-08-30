@@ -245,7 +245,8 @@ const Home = () => {
                     )}
                   </div>
                   <div className="message-input">
-                    <input
+                    <input 
+                      className='inputs'
                       type="text"
                       value={messageInput}
                       onChange={(e) => setMessageInput(e.target.value)}
