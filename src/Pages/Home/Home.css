@@ -112,19 +112,19 @@
         color: #ddddf7;
 
 
-        .logo{
+        /* .logo{
           font-weight: bold;
-        }
-        span{
+        } */
+        /* span{
           font-size: 14px;
           padding: 0px;
           color: white;
-        }
+        } */
 
-        .user{
+        /* .user{
           display: flex;
           gap: 10px;
-        }
+        } */
 
         img{
           background-color: #ddddf7;
@@ -134,13 +134,13 @@
           object-fit: cover;
         }
 
-        button{
+        /* button{
           background-color: #5d5b8d;
           color: #ddddf7;
           font-size: 10px;
           border:none;
           cursor: pointer;
-        }
+        } */
       }
 
 
@@ -482,6 +482,8 @@
       padding: 0;
       margin-left: 100px;
     }
+
+    
     
     .group-modal li {
       margin: 10px 0;
