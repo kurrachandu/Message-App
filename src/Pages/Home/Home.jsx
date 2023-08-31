@@ -49,7 +49,7 @@ const Home = () => {
       if (selectedGroup) {
         const groupChat = {
           sender: loggedInUser.username,
-          receiver: selectedGroup.members,
+          // receiver: selectedGroup.members,
           content: messageInput,
           timestamp: new Date().toLocaleString(),
         };
@@ -111,6 +111,11 @@ const Home = () => {
 
   const handleCreateGroup = () => {
     if (groupname.trim() !== '') {
+      const groupAlreadyExists = groupMessages.some(group => group.group_name === groupname);
+      if (groupAlreadyExists) {
+        alert('Group name already exists. Please choose another name.');
+        return;
+      }
       const newGroup = {
         group_name: groupname,
         admin: loggedInUser.username,
@@ -139,6 +144,11 @@ const Home = () => {
       toggleGroupModal();
     }
   };
+
+  // Filter group messages based on whether the new user is a member or not
+  const filteredGroupMessages = groupMessages.filter(group =>
+    group.members.includes(loggedInUser.username)
+  );
 
   return (
     <div className="home">
@@ -172,7 +182,7 @@ const Home = () => {
                       ))}
                   </ul>
                   <div className="header3">Groups</div>
-                  {groupMessages.map((group, groupIndex) => (
+                  {filteredGroupMessages.map((group, groupIndex) => (
                     <li
                       key={groupIndex}
                       onClick={() => handleGroupClick(group)}
@@ -186,24 +196,23 @@ const Home = () => {
               {showGroupModal && (
                 <div className="group-modal">
                   <h2>Create a Group</h2>
-                  <div className="group-users">
-                    {/* <p>Select users to add to the group:</p> */}
-                    <ul>
+                  {/* <div className="group-users"> */}
+                    {/* <ul>
                       {users
                         .filter(user => user.login_status !== 'login' && user.username !== loggedInUser.username)
                         .map((user, index) => (
                           <li key={index}>{user.username}</li>
                         ))}
-                    </ul>
-                  </div>
+                    </ul> */}
+                  {/* </div> */}
                   <input
                     type="text"
                     value={groupname}
                     onChange={e => setGroupName(e.target.value)}
                     placeholder="Group Name...."
                   />
-                  <button onClick={handleCreateGroup}>Create Group</button>
-                  <button onClick={toggleGroupModal}>Cancel</button>
+                  <button className='button1' onClick={handleCreateGroup}>Create Group</button>
+                  <button className='button2' onClick={toggleGroupModal}>Cancel</button>
                 </div>
               )}
             </div>
@@ -233,7 +242,7 @@ const Home = () => {
                         )
                       )
                     ) : (
-                      <p>No messages to display</p>
+                      <p></p>
                     )}
                   </div>
                   <div className="message-input">
@@ -248,7 +257,7 @@ const Home = () => {
                   </div>
                 </>
               ) : (
-                <p>No Contacts or Groups to display</p>
+                <p>No  Groups to display</p>
               )}
             </div>
           </div>
