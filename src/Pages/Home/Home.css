@@ -362,6 +362,57 @@
     cursor: pointer;
 
 
+    .sidebar {
+      /* ... Existing styles ... */
+      transform: translateX(-100%);
+      transition: transform 0.3s ease-in-out;
+    }
+    
+    .sidebar.open {
+      transform: translateX(0);
+    }
+    
+    .hamburger-btn {
+      background: none;
+      border: none;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 10px;
+    }
+    
+    .hamburger {
+      width: 25px;
+      height: 3px;
+      background-color: #333;
+      transition: transform 0.3s ease-in-out;
+    }
+    
+    .hamburger.open {
+      transform: rotate(-45deg);
+    }
+    
+    .hamburger.open:before, .hamburger.open:after {
+      content: '';
+      position: absolute;
+      width: 25px;
+      height: 3px;
+      background-color: #333;
+    }
+    
+    .hamburger.open:before {
+      transform: translateY(-8px);
+    }
+    
+    .hamburger.open:after {
+      transform: translateY(8px);
+    }
+    
+
+
+
+
     .userChat{
       height: 100vh;
         padding: 10px;
@@ -471,7 +522,7 @@
     } */
 
     .group-modal {
-      border-radius: 50px;
+      border-radius: 10px;
       position: fixed;
       top: 50%;
       left: 50%;
